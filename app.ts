@@ -48,19 +48,22 @@ const App = () => {
       clientRef.current?.setAttribute('disabled', 'disabled')
     }
   }, [tab])
-
   switch (tab) {
-    case '':
-      return html` ${Wrapper} refs=${[hostRef, clientRef]} setTab=${setTab} /> `
     case 'old_session':
       return html`<${Wrapper} refs=${[hostRef, clientRef]} setTab=${setTab}>
  <p>Сессия устарела, создайте новую</p>
       </Wrapper>`
 
-    default:
+    case 'client':
       return html`<${Wrapper} refs=${[hostRef, clientRef]} setTab=${setTab}>
- <${tab && tab === 'client' ? Client : Host} />
+ <${Client} />
       </Wrapper>`
+    case 'host':
+      return html`<${Wrapper} refs=${[hostRef, clientRef]} setTab=${setTab}>
+        <${Host} />
+             </Wrapper>`
+    default:
+      return html`<${Wrapper} refs=${[hostRef, clientRef]} setTab=${setTab} />`
   }
 }
 
