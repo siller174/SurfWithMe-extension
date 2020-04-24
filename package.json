@@ -1,0 +1,27 @@
+{
+  "name": "ext-tracking",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "parcel -p 3000 --hmr-port 35887 manifest.json",
+    "build": "parcel build manifest.json"
+  },
+  "keywords": [],
+  "author": "v1rtl",
+  "license": "ISC",
+  "browserslist": [
+    "last 1 Chrome versions"
+  ],
+  "devDependencies": {
+    "@types/chrome": "^0.0.104",
+    "cssnano": "^4.1.10",
+    "parcel-bundler": "^1.12.4",
+    "parcel-plugin-web-extension": "^1.6.1",
+    "typescript": "^3.8.3"
+  },
+  "dependencies": {
+    "htm": "^3.0.4",
+    "preact": "^10.4.0"
+  }
+}
