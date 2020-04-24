@@ -1,3 +1,5 @@
+const HOST = 'http://104.248.163.157:9091'
+
 chrome.storage.local.get(({ mode, url, id }) => {
   const body = JSON.stringify({
     id,
@@ -6,7 +8,7 @@ chrome.storage.local.get(({ mode, url, id }) => {
   if (id) {
     if (mode !== 'old_session') {
       if (mode === 'client') {
-        fetch(`http://104.248.163.157:9091/api/v1/meeting`, {
+        fetch(`${HOST}/api/v1/meeting`, {
           method: 'POST',
           body,
         })
@@ -28,7 +30,7 @@ chrome.storage.local.get(({ mode, url, id }) => {
             }
           })
       } else if (mode === 'host') {
-        fetch(`http://104.248.163.157:9091/api/v1/meeting`, {
+        fetch(`${HOST}/api/v1/meeting`, {
           method: 'PUT',
           body,
         }).then((res) => {
