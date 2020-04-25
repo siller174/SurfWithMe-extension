@@ -2,35 +2,9 @@ import { HOST } from './app'
 import { html } from 'htm/preact'
 import { useState, useEffect } from 'preact/hooks'
 
-const startHostSession = async (): Promise<string> => {
-  const res = await fetch(`${HOST}/api/v1/meeting/create`, {
-    method: 'POST',
-  })
-
-  const { id } = await res.json()
-
-  return id
-}
-
-const finishHostSession = async (id: string) => {
-  try {
-    const res = await fetch(`${HOST}/api/v1/meeting`, {
-      method: 'DELETE',
-      body: JSON.stringify({ id }),
-    })
-    if (res.status === 204) {
-      chrome.storage.local.remove('id')
-      chrome.storage.local.remove('mode')
-    } else {
-      document.write('Не удалось завершить сессию')
-    }
-  } catch (e) {
-    document.write(e.message)
-  }
-}
-
 const Host = () => {
   const [isSessionRunning, toggleSession] = useState(false)
+  const [err, setErr] = useState('')
 
   const [id, setId] = useState('')
 
@@ -45,18 +19,68 @@ const Host = () => {
     })
   }, [])
 
+  const finishHostSession = async (id: string) => {
+    try {
+      const res = await fetch(`${HOST}/api/v1/meeting`, {
+        method: 'DELETE',
+        body: JSON.stringify({ id }),
+      })
+      if (res.status === 204) {
+        chrome.storage.local.remove(['id', 'mode'])
+      } else {
+        chrome.storage.local.remove(['id', 'mode'])
+        setErr('Не удалось завершить сессию')
+      }
+    } catch (e) {
+      setErr(e.message)
+      chrome.storage.local.remove(['id', 'mode'])
+    }
+  }
+
+  const startHostSession = () => {
+    return fetch(`${HOST}/api/v1/meeting/create`, {
+      method: 'POST',
+    })
+      .then((res) => {
+        if (res.status === 200) {
+          return res.json()
+        } else {
+          return {
+            id: '',
+            ok: false,
+          }
+        }
+      })
+
+      .then(({ id, ok }) => {
+        if (ok) {
+          return {
+            id,
+            ok,
+          }
+        } else {
+          return { ok }
+        }
+      })
+  }
+
   const handleButton = () => {
     if (id && !isSessionRunning) {
-      chrome.storage.local.remove('id')
+      chrome.storage.local.remove(['id', 'mode'])
       location.reload()
     }
 
     if (!isSessionRunning && !id) {
-      startHostSession().then((id) => {
-        toggleSession(true)
-        setId(id)
-        chrome.storage.local.set({ id })
-        chrome.storage.local.set({ mode: 'host' })
+      startHostSession().then(({ id, ok }) => {
+        if (ok) {
+          toggleSession(true)
+          setId(id)
+          chrome.storage.local.set({ id })
+          chrome.storage.local.set({ mode: 'host' })
+        } else {
+          setErr('Ошибка создания сессии')
+          chrome.storage.local.remove(['id', 'host'])
+        }
       })
     } else if (isSessionRunning) {
       toggleSession(false)
@@ -65,12 +89,14 @@ const Host = () => {
   }
 
   return html`
-    <h1>Хост</h1>
-    <p>ID: <code>${id}</code></p>
+    ${err === ''
+      ? html`<h1>Хост</h1>
+          <p>ID: <code>${id}</code></p>
 
-    <button onclick=${handleButton}>
-      ${isSessionRunning ? 'Завершить сессию' : 'Начать сессию'}
-    </button>
+          <button onclick=${handleButton}>
+            ${isSessionRunning ? 'Завершить сессию' : 'Начать сессию'}
+          </button>`
+      : err}
   `
 }
 

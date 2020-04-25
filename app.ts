@@ -3,7 +3,7 @@ import { render, html, Ref } from 'htm/preact'
 import Client from './client'
 import Host from './host'
 
-export const HOST = 'http://104.248.163.157:9091'
+export const HOST = 'https://104.248.163.157:9091'
 
 const Wrapper = ({
   children,
@@ -42,12 +42,21 @@ const App = () => {
   useEffect(() => {
     if (!tab) return
 
-    if (tab === 'client') {
-      hostRef.current?.setAttribute('disabled', 'disabled')
-    } else if (tab === 'host') {
-      clientRef.current?.setAttribute('disabled', 'disabled')
-    }
+    chrome.storage.local.get(({ id }) => {
+      if (tab === 'client') {
+        if (id) {
+          chrome.storage.local.set({ mode: 'client' })
+        }
+        hostRef.current?.setAttribute('disabled', 'disabled')
+      } else if (tab === 'host') {
+        if (id) {
+          chrome.storage.local.set({ mode: 'host' })
+        }
+        clientRef.current?.setAttribute('disabled', 'disabled')
+      }
+    })
   }, [tab])
+
   switch (tab) {
     case 'old_session':
       return html`<${Wrapper} refs=${[hostRef, clientRef]} setTab=${setTab}>

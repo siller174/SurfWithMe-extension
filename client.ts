@@ -12,7 +12,7 @@ export const connectToSession = (id: string) => {
     }),
   })
     .then((res) => {
-      if (res.status === 404) {
+      if (res.status === 404 || res.status === 400) {
         return false
       } else {
         return true
@@ -45,6 +45,9 @@ const Client = () => {
           chrome.storage.local.set({ id })
           chrome.storage.local.set({ mode: 'client' })
           chrome.storage.local.set({ sendLinks: true })
+        } else {
+          document.write('Ошибка подключения')
+          chrome.storage.local.remove(['id', 'mode', 'sendLinks'])
         }
       })
     } else {
