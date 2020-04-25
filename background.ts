@@ -1,13 +1,12 @@
 const HOST = 'https://poom.live:9091'
 
 chrome.storage.local.get(({ mode, url, id }) => {
-
   if (id) {
     if (mode !== 'old_session') {
       if (mode === 'client') {
         const body = JSON.stringify({
           id,
-        })      
+        })
         fetch(`${HOST}/api/v1/meeting`, {
           method: 'POST',
           body,
@@ -24,7 +23,7 @@ chrome.storage.local.get(({ mode, url, id }) => {
               chrome.storage.local.set({ url })
               if (url !== json.url) {
                 setTimeout(() => {
-                  location.reload()
+                  location.assign(json.url)
                 }, 5000)
               }
             }
@@ -32,8 +31,8 @@ chrome.storage.local.get(({ mode, url, id }) => {
       } else if (mode === 'host') {
         const body = JSON.stringify({
           id,
-          url,
-        })      
+          url: url || location.href,
+        })
         fetch(`${HOST}/api/v1/meeting`, {
           method: 'PUT',
           body,
