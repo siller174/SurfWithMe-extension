@@ -3,7 +3,7 @@ import { render, html, Ref } from 'htm/preact'
 import Client from './client'
 import Host from './host'
 
-export const HOST = 'https://104.248.163.157:9091'
+export const HOST = 'https://poom.live:9091'
 
 const Wrapper = ({
   children,

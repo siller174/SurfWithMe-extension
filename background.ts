@@ -1,4 +1,4 @@
-const HOST = 'http://104.248.163.157:9091'
+const HOST = 'https://poom.live:9091'
 
 chrome.storage.local.get(({ mode, url, id }) => {
   const body = JSON.stringify({
