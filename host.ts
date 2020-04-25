@@ -52,14 +52,14 @@ const Host = () => {
         }
       })
 
-      .then(({ id, ok }) => {
-        if (ok) {
+      .then(({ id }) => {
+        if (id) {
           return {
             id,
-            ok,
+            ok: true,
           }
         } else {
-          return { ok }
+          return { ok: false }
         }
       })
   }
