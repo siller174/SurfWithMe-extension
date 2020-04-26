@@ -7,6 +7,7 @@ const MODE_OFF = 'old_session'
 chrome.storage.local.get((res) => {
   if (res.mode === MODE_HOST) {
     const newLink = location.href
+
     if (res.host_last_send_link !== newLink) {
       fetch(`${HOST}/api/v1/meeting`, {
         method: 'PUT',
@@ -26,7 +27,7 @@ chrome.storage.local.get((res) => {
   } else if (res.mode === MODE_CLIENT) {
     setInterval(() => {
       const { id, client_last_get_link } = res
-      // extract id, session mode and last link used from chrome storage
+      // extract id and last link used from chrome storage
 
       fetch(`${HOST}/api/v1/meeting`, {
         method: 'POST',
@@ -48,7 +49,7 @@ chrome.storage.local.get((res) => {
         })
         .then(({ url }) => {
           if (client_last_get_link !== url) {
-            // link hasn't changed
+            // link has changed
             chrome.storage.local.set({ client_last_get_link: url })
             location.assign(url)
           }
