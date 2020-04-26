@@ -27,11 +27,10 @@ chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
 			body,
 		}).then((res) => {
 			if (res.status === 204) {
-				chrome.storage.local.set({ "host_last_send_link": userLink })
+				chrome.storage.local.set({ host_last_send_link: userLink })
 			}
 			if (res.status !== 204) {
-				chrome.storage.local.remove("host_last_send_link")
-				chrome.storage.local.set({ mode: MODE_OFF }) //todo or remove mode?
+				chrome.storage.local.remove(['mode', 'id', 'host_last_send_link'])
 			}
 		})
 
@@ -52,8 +51,7 @@ window.setInterval(function () {
 		})
 			.then((response) => {
 				if (response.status === 404) {
-					// end session
-					chrome.storage.local.set({ mode: MODE_OFF })
+					chrome.storage.local.remove(['mode', 'id', 'client_last_get_link'])
 					return { url: '' }
 				} else if (response.status == 200) {
 					// send json response with URL
@@ -68,7 +66,7 @@ window.setInterval(function () {
 					chrome.storage.local.set({ client_last_get_link: url })
 					// window.(url)
 					// location.assign(url)
-					chrome.tabs.update({active: true, url: url});
+					chrome.tabs.update({ active: true, url: url });
 				}
 			})
 	})

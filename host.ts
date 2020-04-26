@@ -18,7 +18,7 @@ const Host = () => {
   }, [])
 
   const finishHostSession = async (id: string) => {
-    chrome.storage.local.remove(['id', 'mode'])
+    chrome.storage.local.remove(['mode', 'id', 'host_last_send_link'])
     try {
       const res = await fetch(`${HOST}/api/v1/meeting`, {
         method: 'DELETE',
@@ -74,7 +74,7 @@ const Host = () => {
           chrome.storage.local.set({ mode: 'host' })
         } else {
           setErr('Ошибка создания сессии')
-          chrome.storage.local.remove(['id', 'host'])
+          chrome.storage.local.remove(['mode', 'id', 'host_last_send_link'])
         }
       })
     } else if (isSessionRunning) {

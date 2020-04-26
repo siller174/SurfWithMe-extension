@@ -32,9 +32,6 @@ const Client = () => {
     chrome.storage.local.get('id', (res) => {
       setId(res.id)
     })
-    chrome.storage.local.get('sendLinks', (res) => {
-      setConnected(res.sendLinks)
-    })
   }, [])
 
   const handleButton = () => {
@@ -44,16 +41,14 @@ const Client = () => {
           setConnected(true)
           chrome.storage.local.set({ id })
           chrome.storage.local.set({ mode: 'client' })
-          chrome.storage.local.set({ sendLinks: true })
         } else {
           document.write('Ошибка подключения')
-          chrome.storage.local.remove(['id', 'mode', 'sendLinks'])
+          chrome.storage.local.remove(['id', 'mode'])
         }
       })
     } else {
       setConnected(false)
-      chrome.storage.local.set({ sendLinks: false })
-      chrome.storage.local.remove('mode')
+      chrome.storage.local.remove(['mode', 'id', 'client_last_get_link'])
     }
   }
 

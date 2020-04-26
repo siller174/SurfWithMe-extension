@@ -11,16 +11,16 @@ const NavBar = ({ setTab, refs }: { setTab: (tab: Tab) => void; refs: Ref<HTMLBu
   useEffect(() => {
     chrome.storage.local.get(({ mode }) => {
       if (mode === 'host') {
-        refs[0].current?.setAttribute('disabled', 'disabled')
-      } else if (mode === 'client') {
         refs[1].current?.setAttribute('disabled', 'disabled')
+      } else if (mode === 'client') {
+        refs[0].current?.setAttribute('disabled', 'disabled')
       }
     })
   }, [])
 
   chrome.storage.onChanged.addListener((mode) => {
     if (mode?.mode?.newValue === 'client') {
-      refs[1].current?.setAttribute('disabled', 'disabled')
+      refs[0].current?.setAttribute('disabled', 'disabled')
     } else if (mode?.mode?.newValue === 'host') {
       refs[1].current?.setAttribute('disabled', 'disabled')
     }
