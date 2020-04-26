@@ -17,9 +17,9 @@ const NavBar = ({ setTab, refs }: { setTab: (tab: Tab) => void; refs: Ref<HTMLBu
   })
 
   chrome.storage.onChanged.addListener((mode) => {
-    if (mode.mode.newValue === 'client') {
+    if (mode?.mode?.newValue === 'client') {
       refs[0].current?.setAttribute('disabled', 'disabled')
-    } else if (mode.mode.newValue === 'host') {
+    } else if (mode?.mode?.newValue === 'host') {
       refs[1].current?.setAttribute('disabled', 'disabled')
     }
   })
