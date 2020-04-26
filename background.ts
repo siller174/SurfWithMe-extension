@@ -43,35 +43,38 @@ chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
 	})
 });
 
-chrome.storage.local.get(({ mode, url, id }) => {
-	alert("mod " + mode + " url " + url + " id " + id)
-	if (id) {
-		if (mode === MODE_CLIENT) {
+
+
+window.setInterval(function () {
+	chrome.storage.local.get(('mode'), function (res) {
+		if (res.mode !== MODE_CLIENT) {
+			return // skip
+		}
+		chrome.storage.local.get(('id'), function (res) {
 			const body = JSON.stringify({
-				id,
+				"id": res.id,
 			})
 			fetch(`${HOST}/api/v1/meeting`, {
 				method: 'POST',
 				body,
 			})
-				.then((res) => {
-					if (res.status === 404) {
+				.then((response) => {
+					var newLink = response.json.url // todo how to fix it
+					if (response.status === 404) {
 						chrome.storage.local.set({ mode: MODE_OFF })
 						return
 					}
-					if (res.status == 200) {
-						chrome.storage.local.get(("client_last_get_link"), function (res) {
-							if (res.client_last_get_link === res.json.url) {
+					if (response.status == 200) {
+						chrome.storage.local.get(("client_last_get_link"), function (storRes) {
+							if (storRes.client_last_get_link === newLink) {
 								// link was not change, skip
 								return
 							}
 						})
-						chrome.storage.local.set({ "client_last_get_link": url })
-						setTimeout(() => {
-							location.assign(url)
-						}, 5000)
+						chrome.storage.local.set({ "client_last_get_link": newLink })
+						location.assign(newLink)
 					}
 				})
-		}
-	}
-})
+		})
+	})
+}, 1000 * 5);
