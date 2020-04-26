@@ -1,18 +1,17 @@
 {
   "manifest_version": 2,
-  "name": "aaaaa",
-  "short_name": "aaaaa.",
+  "name": "Surf with me",
+  "short_name": "SurfWithMe",
   "version": "0.1.0",
-  "description": "aaaaa",
+  "description": "Share special code and surf with friends",
   "permissions": ["storage", "tabs", "activeTab", "<all_urls>"],
   "browser_action": {
     "default_popup": "index.html",
     "default_action": "logo.png"
   },
-  "content_scripts": [
-    {
-      "matches": ["<all_urls>"],
-      "js": ["background.ts"]
-    }
-  ]
+  "background": {
+    "scripts": [
+      "background.ts"
+    ]
+  }
 }

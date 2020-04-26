@@ -60,6 +60,7 @@ const Client = () => {
   return html`<h1>Клиент</h1>
 
     <input
+      disabled=${connected}
       value=${id}
       oninput=${(e: JSX.TargetedEvent<HTMLInputElement, Event>) => setId(e.currentTarget.value)}
       placeholder="ID Сессии"
