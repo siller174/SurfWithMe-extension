@@ -32,11 +32,11 @@ const Client = () => {
   const [connected, setConnected] = useState(false)
 
   useEffect(() => {
-    chrome.storage.local.get('id', (s) => {
-      setId(s.id)
+    chrome.storage.local.get('id', (res) => {
+      setId(res.id)
     })
-    chrome.storage.local.get('sendLinks', (s) => {
-      setConnected(s.sendLinks)
+    chrome.storage.local.get('sendLinks', (res) => {
+      setConnected(res.sendLinks)
     })
   }, [])
 

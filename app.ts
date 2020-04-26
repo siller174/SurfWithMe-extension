@@ -52,12 +52,12 @@ const App = () => {
   const hostRef = useRef<HTMLButtonElement>()
 
   useEffect(() => {
-    chrome.storage.local.get(({ mode }) => {
-      if (mode === 'old_session') {
+    chrome.storage.local.get('mode', function (res) {
+      if (res.mode === 'old_session') {
         chrome.storage.local.remove(['id', 'sendLinks'])
       }
 
-      setTab(mode)
+      setTab(res.mode)
     })
     chrome.storage.onChanged.addListener((l) => console.log(l))
   }, [])
