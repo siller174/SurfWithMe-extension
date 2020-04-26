@@ -1,28 +1,51 @@
-import { useState, useEffect, useRef } from 'preact/hooks'
+import { useState, useEffect, useRef, useContext } from 'preact/hooks'
 import { render, html, Ref } from 'htm/preact'
 import Client from './client'
 import Host from './host'
+import { LockProvider, LockContext } from './context'
 
 export const HOST = 'https://poom.live:9091'
+
+type Tab = 'client' | 'host' | '' | 'old_session'
+
+const NavBar = ({ setTab, refs }: { setTab: (tab: Tab) => void; refs: Ref<HTMLButtonElement>[] }) => {
+  const { locked } = useContext(LockContext)
+
+  if (locked.host) {
+    refs[0].current?.setAttribute('disabled', 'disabled')
+  } else if (locked.client) {
+    refs[1].current?.setAttribute('disabled', 'disabled')
+  }
+
+  return html` <nav>
+    <button onclick=${() => setTab('host')} ref=${refs[0]}>Хост</button>
+    <button onclick=${() => setTab('client')} ref=${refs[1]}>Клиент</button>
+  </nav>`
+}
 
 const Wrapper = ({
   children,
   setTab,
+
   refs,
 }: {
   children: any
-  setTab: (tab: 'client' | 'host' | '' | 'old_session') => void
+  setTab: (tab: Tab) => void
+  tab: Tab
   refs: Ref<HTMLButtonElement>[]
-}) => html`
-  <nav>
-    <button onclick=${() => setTab('host')} ref=${refs[0]}>Хост</button>
-    <button onclick=${() => setTab('client')} ref=${refs[1]}>Клиент</button>
-  </nav>
+}) => {
+  return html`
+  <${LockProvider}>
+
+<${NavBar} setTab=${setTab} refs=${refs} />
   ${children}
+  </LockProvider>
+ 
 `
+}
 
 const App = () => {
-  const [tab, setTab] = useState<'client' | 'host' | '' | 'old_session'>('')
+  const [tab, setTab] = useState<Tab>('')
 
   const clientRef = useRef<HTMLButtonElement>()
 
@@ -47,12 +70,11 @@ const App = () => {
         if (id) {
           chrome.storage.local.set({ mode: 'client' })
         }
-        hostRef.current?.setAttribute('disabled', 'disabled')
+        hostRef
       } else if (tab === 'host') {
         if (id) {
           chrome.storage.local.set({ mode: 'host' })
         }
-        clientRef.current?.setAttribute('disabled', 'disabled')
       }
     })
   }, [tab])
@@ -68,7 +90,7 @@ const App = () => {
  <${Client} />
       </Wrapper>`
     case 'host':
-      return html`<${Wrapper} refs=${[hostRef, clientRef]} setTab=${setTab}>
+      return html`<${Wrapper} refs=${[hostRef, clientRef]} setTab=${setTab} >
         <${Host} />
              </Wrapper>`
     default:

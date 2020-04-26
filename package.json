@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "parcel -p 3000 --hmr-port 35887 manifest.json",
+    "dev": "parcel -p 27352 --hmr-port 35887 manifest.json",
     "build": "parcel build manifest.json"
   },
   "keywords": [],

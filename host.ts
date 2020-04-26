@@ -1,6 +1,7 @@
 import { HOST } from './app'
 import { html } from 'htm/preact'
-import { useState, useEffect } from 'preact/hooks'
+import { useState, useEffect, useContext } from 'preact/hooks'
+import { LockContext } from './context'
 
 const Host = () => {
   const [isSessionRunning, toggleSession] = useState(false)
@@ -64,6 +65,8 @@ const Host = () => {
       })
   }
 
+  const { setLocked } = useContext(LockContext)
+
   const handleButton = () => {
     if (id && !isSessionRunning) {
       chrome.storage.local.remove(['id', 'mode'])
@@ -75,6 +78,7 @@ const Host = () => {
         if (ok) {
           toggleSession(true)
           setId(id)
+          setLocked({ host: true })
           chrome.storage.local.set({ id })
           chrome.storage.local.set({ mode: 'host' })
         } else {

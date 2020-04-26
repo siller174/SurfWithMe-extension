@@ -1,7 +1,8 @@
 import { HOST } from './app'
-import { useState, useEffect, useRef } from 'preact/hooks'
+import { useState, useEffect, useContext } from 'preact/hooks'
 import { JSX } from 'preact'
 import { html } from 'htm/preact'
+import { LockContext } from './context'
 
 export const connectToSession = (id: string) => {
   return fetch(`${HOST}/api/v1/meeting`, {
@@ -26,6 +27,8 @@ export const connectToSession = (id: string) => {
 const Client = () => {
   const [id, setId] = useState('')
 
+  const { setLocked } = useContext(LockContext)
+
   const [connected, setConnected] = useState(false)
 
   useEffect(() => {
@@ -42,6 +45,7 @@ const Client = () => {
       connectToSession(id).then((ok) => {
         if (ok) {
           setConnected(true)
+          setLocked({ client: true })
           chrome.storage.local.set({ id })
           chrome.storage.local.set({ mode: 'client' })
           chrome.storage.local.set({ sendLinks: true })
@@ -56,8 +60,6 @@ const Client = () => {
       chrome.storage.local.remove('mode')
     }
   }
-
-  const ref = useRef<HTMLInputElement>()
 
   return html`<h1>Клиент</h1>
 
