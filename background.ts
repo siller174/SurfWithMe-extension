@@ -6,26 +6,23 @@ const MODE_OFF = 'old_session'
 
 chrome.storage.local.get((res) => {
   if (res.mode === MODE_HOST) {
-    chrome.tabs.onUpdated.addListener((tabId, changeInfo) => {
-      const newLink = changeInfo.url
-
-      if (res.host_last_send_link !== newLink) {
-        fetch(`${HOST}/api/v1/meeting`, {
-          method: 'PUT',
-          body: JSON.stringify({
-            id: res.id,
-            url: newLink,
-          }),
-        }).then((res) => {
-          if (res.status === 204) {
-            chrome.storage.local.set({ host_last_send_link: newLink })
-          } else {
-            chrome.storage.local.remove('host_last_send_link')
-            chrome.storage.local.set({ mode: MODE_OFF }) //todo or remove mode?
-          }
-        })
-      }
-    })
+    const newLink = location.href
+    if (res.host_last_send_link !== newLink) {
+      fetch(`${HOST}/api/v1/meeting`, {
+        method: 'PUT',
+        body: JSON.stringify({
+          id: res.id,
+          url: newLink,
+        }),
+      }).then((res) => {
+        if (res.status === 204) {
+          chrome.storage.local.set({ host_last_send_link: newLink })
+        } else {
+          chrome.storage.local.remove('host_last_send_link')
+          chrome.storage.local.set({ mode: MODE_OFF }) //todo or remove mode?
+        }
+      })
+    }
   } else if (res.mode === MODE_CLIENT) {
     setInterval(() => {
       const { id, client_last_get_link } = res

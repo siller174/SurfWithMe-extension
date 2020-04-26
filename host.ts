@@ -9,31 +9,27 @@ const Host = () => {
   const [id, setId] = useState('')
 
   useEffect(() => {
-    chrome.storage.local.get('id', (s) => {
-      setId(s.id)
-    })
-    chrome.storage.local.get('mode', (s) => {
-      if (s.mode === 'host' || s.mode === 'client') {
+    chrome.storage.local.get(({ id, mode }) => {
+      setId(id)
+      if (mode === 'host' || mode === 'client') {
         toggleSession(true)
       }
     })
   }, [])
 
   const finishHostSession = async (id: string) => {
+    chrome.storage.local.remove(['id', 'mode'])
     try {
       const res = await fetch(`${HOST}/api/v1/meeting`, {
         method: 'DELETE',
         body: JSON.stringify({ id }),
       })
       if (res.status === 204) {
-        chrome.storage.local.remove(['id', 'mode'])
       } else {
-        chrome.storage.local.remove(['id', 'mode'])
         setErr('Не удалось завершить сессию')
       }
     } catch (e) {
       setErr(e.message)
-      chrome.storage.local.remove(['id', 'mode'])
     }
   }
 
@@ -51,7 +47,6 @@ const Host = () => {
           }
         }
       })
-
       .then(({ id }) => {
         if (id) {
           return {

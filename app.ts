@@ -12,7 +12,7 @@ const NavBar = ({ setTab, refs }: { setTab: (tab: Tab) => void; refs: Ref<HTMLBu
     chrome.storage.local.get(({ mode }) => {
       if (mode === 'host') {
         refs[0].current?.setAttribute('disabled', 'disabled')
-      } else {
+      } else if (mode === 'client') {
         refs[1].current?.setAttribute('disabled', 'disabled')
       }
     })
@@ -61,7 +61,6 @@ const App = () => {
       if (mode === 'old_session') {
         chrome.storage.local.remove(['id', 'sendLinks'])
       }
-
       setTab(mode)
     })
   }, [])
