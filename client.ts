@@ -29,11 +29,11 @@ const Client = () => {
   const [connected, setConnected] = useState(false)
 
   useEffect(() => {
-    chrome.storage.local.get('id', (s) => {
-      setId(s.id)
+    chrome.storage.local.get('id', (res) => {
+      setId(res.id)
     })
-    chrome.storage.local.get('sendLinks', (s) => {
-      setConnected(s.sendLinks)
+    chrome.storage.local.get('sendLinks', (res) => {
+      setConnected(res.sendLinks)
     })
   }, [])
 
@@ -42,9 +42,9 @@ const Client = () => {
       connectToSession(id).then((ok) => {
         if (ok) {
           setConnected(true)
-          chrome.storage.local.set({ id })
-          chrome.storage.local.set({ mode: 'client' })
-          chrome.storage.local.set({ sendLinks: true })
+          chrome.storage.local.set({ 'id': id })
+          chrome.storage.local.set({ 'mode': 'client' })
+          chrome.storage.local.set({ 'sendLinks' : true })
         } else {
           document.write('Ошибка подключения')
           chrome.storage.local.remove(['id', 'mode', 'sendLinks'])

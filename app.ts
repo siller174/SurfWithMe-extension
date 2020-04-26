@@ -5,6 +5,8 @@ import Host from './host'
 
 export const HOST = 'https://poom.live:9091'
 
+
+
 const Wrapper = ({
   children,
   setTab,
@@ -29,12 +31,12 @@ const App = () => {
   const hostRef = useRef<HTMLButtonElement>()
 
   useEffect(() => {
-    chrome.storage.local.get(({ mode }) => {
-      if (mode === 'old_session') {
+			chrome.storage.local.get(("mode"), function (res) {
+      if (res.mode === 'old_session') {
         chrome.storage.local.remove(['id', 'sendLinks'])
       }
 
-      setTab(mode)
+      setTab(res.mode)
     })
     chrome.storage.onChanged.addListener((l) => console.log(l))
   }, [])
@@ -45,12 +47,12 @@ const App = () => {
     chrome.storage.local.get(({ id }) => {
       if (tab === 'client') {
         if (id) {
-          chrome.storage.local.set({ mode: 'client' })
+          chrome.storage.local.set({ 'mode': 'client' })
         }
         hostRef.current?.setAttribute('disabled', 'disabled')
       } else if (tab === 'host') {
         if (id) {
-          chrome.storage.local.set({ mode: 'host' })
+          chrome.storage.local.set({ 'mode': 'host' })
         }
         clientRef.current?.setAttribute('disabled', 'disabled')
       }
