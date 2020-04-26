@@ -2,20 +2,27 @@ import { useState, useEffect, useRef, useContext } from 'preact/hooks'
 import { render, html, Ref } from 'htm/preact'
 import Client from './client'
 import Host from './host'
-import { LockProvider, LockContext } from './context'
 
 export const HOST = 'https://poom.live:9091'
 
 type Tab = 'client' | 'host' | '' | 'old_session'
 
 const NavBar = ({ setTab, refs }: { setTab: (tab: Tab) => void; refs: Ref<HTMLButtonElement>[] }) => {
-  const { locked } = useContext(LockContext)
+  const [isLocked, lock] = useState<{
+    host?: boolean
+    client?: boolean
+  }>({
+    host: false,
+    client: false,
+  })
 
-  if (locked.host) {
-    refs[0].current?.setAttribute('disabled', 'disabled')
-  } else if (locked.client) {
-    refs[1].current?.setAttribute('disabled', 'disabled')
-  }
+  chrome.storage.onChanged.addListener((mode) => {
+    if (mode.mode.newValue === 'host') {
+      refs[0].current?.setAttribute('disabled', 'disabled')
+    } else if (mode.mode.newValue === 'client') {
+      refs[1].current?.setAttribute('disabled', 'disabled')
+    }
+  })
 
   return html` <nav>
     <button onclick=${() => setTab('host')} ref=${refs[0]}>Хост</button>
@@ -35,13 +42,9 @@ const Wrapper = ({
   refs: Ref<HTMLButtonElement>[]
 }) => {
   return html`
-  <${LockProvider}>
-
-<${NavBar} setTab=${setTab} refs=${refs} />
-  ${children}
-  </LockProvider>
- 
-`
+    <${NavBar} setTab=${setTab} refs=${refs} />
+    ${children}
+  `
 }
 
 const App = () => {
@@ -52,32 +55,14 @@ const App = () => {
   const hostRef = useRef<HTMLButtonElement>()
 
   useEffect(() => {
-    chrome.storage.local.get('mode', function (res) {
-      if (res.mode === 'old_session') {
+    chrome.storage.local.get(({ mode }) => {
+      if (mode === 'old_session') {
         chrome.storage.local.remove(['id', 'sendLinks'])
       }
 
-      setTab(res.mode)
+      setTab(mode)
     })
-    chrome.storage.onChanged.addListener((l) => console.log(l))
   }, [])
-
-  useEffect(() => {
-    if (!tab) return
-
-    chrome.storage.local.get(({ id }) => {
-      if (tab === 'client') {
-        if (id) {
-          chrome.storage.local.set({ mode: 'client' })
-        }
-        hostRef
-      } else if (tab === 'host') {
-        if (id) {
-          chrome.storage.local.set({ mode: 'host' })
-        }
-      }
-    })
-  }, [tab])
 
   switch (tab) {
     case 'old_session':
