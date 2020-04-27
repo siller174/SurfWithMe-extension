@@ -29,8 +29,11 @@ const Client = () => {
   const [connected, setConnected] = useState(false)
 
   useEffect(() => {
-    chrome.storage.local.get('id', (res) => {
-      setId(res.id)
+    chrome.storage.local.get(['id', 'mode'], (res) => {
+      if (res.mode == 'client') {
+        setId(res.id)
+        setConnected(true)
+      }
     })
   }, [])
 

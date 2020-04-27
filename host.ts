@@ -86,7 +86,7 @@ const Host = () => {
   return html`
     ${err === ''
       ? html`<h1>Хост</h1>
-          <p>ID: <code>${id}</code></p>
+          <h2>ID: ${id}</h2>
 
           <button onclick=${handleButton}>
             ${isSessionRunning ? 'Завершить сессию' : 'Начать сессию'}
