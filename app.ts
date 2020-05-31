@@ -27,8 +27,8 @@ const NavBar = ({ setTab, refs }: { setTab: (tab: Tab) => void; refs: Ref<HTMLBu
   })
 
   return html` <nav>
-    <button onclick=${() => setTab('host')} ref=${refs[0]}>Хост</button>
-    <button onclick=${() => setTab('client')} ref=${refs[1]}>Клиент</button>
+    <button onclick=${() => setTab('host')} ref=${refs[0]}>Host</button>
+    <button onclick=${() => setTab('client')} ref=${refs[1]}>Client</button>
   </nav>`
 }
 

@@ -26,7 +26,7 @@ const Host = () => {
       })
       if (res.status === 204) {
       } else {
-        setErr('Не удалось завершить сессию')
+        setErr('Could not end session')
       }
     } catch (e) {
       setErr(e.message)
@@ -73,7 +73,7 @@ const Host = () => {
           chrome.storage.local.set({ id })
           chrome.storage.local.set({ mode: 'host' })
         } else {
-          setErr('Ошибка создания сессии')
+          setErr('Error creating session')
           chrome.storage.local.remove(['mode', 'id', 'host_last_send_link'])
         }
       })
@@ -85,11 +85,11 @@ const Host = () => {
 
   return html`
     ${err === ''
-      ? html`<h1>Хост</h1>
+      ? html`<h1>Host</h1>
           <h2>ID: ${id}</h2>
 
           <button onclick=${handleButton}>
-            ${isSessionRunning ? 'Завершить сессию' : 'Начать сессию'}
+            ${isSessionRunning ? 'Finish session' : 'Create session'}
           </button>`
       : err}
   `

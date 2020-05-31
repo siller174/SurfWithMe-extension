@@ -64,8 +64,6 @@ window.setInterval(function () {
 				if (client_last_get_link !== url) {
 					// link has changed
 					chrome.storage.local.set({ client_last_get_link: url })
-					// window.(url)
-					// location.assign(url)
 					chrome.tabs.update({ active: true, url: url });
 				}
 			})
