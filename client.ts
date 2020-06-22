@@ -45,7 +45,7 @@ const Client = () => {
           chrome.storage.local.set({ id })
           chrome.storage.local.set({ mode: 'client' })
         } else {
-          document.write('Ошибка подключения')
+          document.write('Connection error')
           chrome.storage.local.remove(['id', 'mode'])
         }
       })
@@ -55,16 +55,16 @@ const Client = () => {
     }
   }
 
-  return html`<h1>Клиент</h1>
+  return html`<h1>Client</h1>
 
     <input
       disabled=${connected}
       value=${id}
       oninput=${(e: JSX.TargetedEvent<HTMLInputElement, Event>) => setId(e.currentTarget.value)}
-      placeholder="ID Сессии"
+      placeholder="ID Session"
     />
     <button onclick=${handleButton}>
-      ${connected ? 'Отключиться' : 'Подключиться'}
+      ${connected ? 'Disconnect' : 'Connect'}
     </button>`
 }
 
