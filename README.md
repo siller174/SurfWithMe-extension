@@ -1,15 +1,14 @@
-# Инструкция по установке
+# Meeting Helper (Surf with me)
+Stream screen in skype or zoom is not cool! But How to choosing something in the internet without stream screen?
+Need to stream links from browser to browser!
 
-## С нуля
 
-- Поставить [Node.js](https://nodejs.org)
-- Зайти в директорию с расширением
-- Прописать `npm i`
-- Прописать `npm build` или `npm build`
+Backend: [Here](https://github.com/siller174/meetingHelper)
 
-Билд готов
+Backend: Go, Redis, Docker
+Extension: Typescript
 
-## С готовым билдом
 
-- Меняем поля в manifest.json под себя
-- Заходим [сюда](https://chrome.google.com/webstore/developer/dashboard) и публикуем
+
+## Presentation:
+[![Presentation](https://i.ibb.co/fYdQ25h/2020-06-23-11-16-39.png)](https://www.youtube.com/watch?v=ZC7q67UERxM)
